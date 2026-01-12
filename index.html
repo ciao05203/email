@@ -1,8 +1,22 @@
-<!DOCTYPE html>
-<html>
-<body>
-  <script>
-    window.location = "https://temp-mail.org/zh/view/6964d09f14b7710123d9b2a1"
-  </script>
-</body>
-</html>
+<!-- index.html -->
+<div>
+  你的临时邮箱：<span id="tempEmail"></span>
+</div>
+<div id="emailsList">暂无邮件</div>
+
+<script>
+  // 从后端获取临时邮箱
+  fetch('/generate-email')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('tempEmail').textContent = data.email;
+      // 轮询检查新邮件
+      setInterval(() => {
+        fetch(`/check-emails?email=${data.email}`)
+          .then(res => res.json())
+          .then(emails => {
+            document.getElementById('emailsList').textContent = JSON.stringify(emails);
+          });
+      }, 5000);
+    });
+</script>
