@@ -1,22 +1,30 @@
-// server.js
+// Import dependencies
 const express = require('express');
+const cors = require('cors');
 const app = express();
 
-// 存储临时邮箱（实际需用数据库）
+// Enable CORS middleware
+app.use(cors());
+
+// Store temporary emails (use a database in production)
 const tempEmails = new Map();
 
-// 生成临时邮箱（格式：随机字符串@你的域名.com）
+// Generate temporary email (format: random string@your-domain.com)
 app.get('/generate-email', (req, res) => {
   const randomStr = Math.random().toString(36).substring(2, 10);
-  const email = `${randomStr}@your-domain.com`;
-  tempEmails.set(email, []); // 存储该邮箱的邮件
+  // Replace with your own domain (example uses a public temp email domain)
+  const email = `${randomStr}@temp-mail.org`;
+  tempEmails.set(email, []); // Initialize empty email list for this address
   res.json({ email });
 });
 
-// 检查邮件（实际需对接邮件服务器获取新邮件）
+// Check for new emails (connect to mail server in production)
 app.get('/check-emails', (req, res) => {
   const emails = tempEmails.get(req.query.email) || [];
   res.json(emails);
 });
 
-app.listen(3000, () => console.log('服务启动：http://localhost:3000'));
+// Start server
+app.listen(3000, () => {
+  console.log('Backend server running at: http://localhost:3000');
+});
